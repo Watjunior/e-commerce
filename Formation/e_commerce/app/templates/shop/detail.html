@@ -1,0 +1,57 @@
+{% extends "shop/base.html" %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-6 ">
+            <div class = "col-xs-6 ms-5 ">
+                <img src="{{ product.image }}" alt="" width="300px" height="300px">
+            </div>
+        </div>
+        <div class="">
+            <div id="aa{{ product.id }}" class="text-primary display-3">
+                {{ product.name }}
+            </div>
+            <div id="price{{ product.id }}" class="text-danger col-xs-6">
+                {{ product.price }}$
+            </div>
+            <div class="text-ligth col-xs-6 p-3 ">
+                {{ product.description }}
+            </div>
+            <button id="{{ product.id }}" class="btn tedi btn-success">acheter</button>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script type="text/javascript">
+    console.log('bonjour');
+    if(localStorage.getItem('panier')==null){
+            var panier = {};
+        }else{
+            panier = JSON.parse(localStorage.getItem('panier'));
+        }
+    $(document).on('click','.tedi',function(){
+        console.log('ajouter');
+        var item_id = this.id.toString();
+        
+        quantite="";
+        if(panier[item_id] != undefined){
+           quantite= panier[item_id][0] + 1 ;
+           panier [item_id][0] = quantite ;
+           panier[item_id][2] += parseFloat(document.getElementById("price"+item_id).innerHTML);
+            
+        } else{
+            quantite = 1 ;
+            prix = parseFloat(document.getElementById("price"+item_id).innerHTML);
+            name = document.getElementById('aa'+item_id).innerHTML;
+            panier[item_id]=[quantite,name,prix];
+            //console.log(panier[1][0]);
+            console.log(panier);
+        }
+        localStorage.setItem('panier',JSON.stringify(panier));
+        document.getElementById('panier').innerHTML = "panier ("+Object.keys(panier).length+")" ;
+    })
+</script>
+{% endblock js %}
